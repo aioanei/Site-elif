@@ -10,7 +10,7 @@ const emojis = [
   '/photo1.jpg',  // Replace with your photo paths
   '/photo2.jpg',
   '/photo3.jpg',
-  '/photo4.jpg',
+  '/photo4.JPG',
   '/photo5.jpg',
   '/photo6.jpg',
   '/photo7.jpg',
