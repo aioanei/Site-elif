@@ -94,8 +94,11 @@ export default function QuizPage() {
     if (selectedAnswer !== null) return;
 
     setSelectedAnswer(index);
-    if (index === questions[currentQuestion].correctAnswer) {
-      setScore(score + 1);
+    const isCorrect = index === questions[currentQuestion].correctAnswer;
+    const newScore = isCorrect ? score + 1 : score;
+    
+    if (isCorrect) {
+      setScore(newScore);
     }
 
     setTimeout(() => {
@@ -104,14 +107,12 @@ export default function QuizPage() {
         setSelectedAnswer(null);
       } else {
         setQuizCompleted(true);
-        saveScore();
+        saveScoreToServer(newScore);
       }
     }, 1500);
   };
 
-  const saveScore = async () => {
-    const finalScore = selectedAnswer === questions[currentQuestion].correctAnswer ? score + 1 : score;
-    
+  const saveScoreToServer = async (finalScore: number) => {
     try {
       await fetch('/api/leaderboard', {
         method: 'POST',
@@ -127,8 +128,16 @@ export default function QuizPage() {
     }
   };
 
-  const getScoreMessage = () => {
-    const finalScore = score;
+  const getFinalScore = () => {
+    // The last question's score might not be updated yet in state
+    // So we need to check if the last answer was correct
+    if (quizCompleted && selectedAnswer !== null) {
+      return selectedAnswer === questions[questions.length - 1].correctAnswer ? score : score;
+    }
+    return score;
+  };
+
+  const getScoreMessage = (finalScore: number) => {
     const percentage = (finalScore / questions.length) * 100;
 
     if (percentage === 100) return "Perfect! You know her like no one else! 💖";
@@ -199,7 +208,7 @@ export default function QuizPage() {
           <p className="text-3xl font-bold text-romantic-700 mb-4">
             Score: {score} / {questions.length}
           </p>
-          <p className="text-xl text-gray-700 mb-8">{getScoreMessage()}</p>
+          <p className="text-xl text-gray-700 mb-8">{getScoreMessage(score)}</p>
           
           <div className="flex gap-4 justify-center">
             <button
