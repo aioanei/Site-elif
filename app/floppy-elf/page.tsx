@@ -43,7 +43,7 @@ export default function FloppyElfPage() {
 
     const gravity = 0.15;  // Very low gravity for easy gameplay
     const jump = -5;       // Gentle jump for better control
-    let pipes: Array<{ x: number; y: number; width: number; gap: number }> = [];
+    let pipes: Array<{ x: number; y: number; width: number; gap: number; scored?: boolean }> = [];
     const pipeWidth = 60;
     const pipeGap = 180;   // Tighter gap for more challenge
     let frameCount = 0;
